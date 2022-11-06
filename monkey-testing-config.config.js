@@ -3,16 +3,21 @@ const { defineConfig } = require('cypress')
 module.exports = defineConfig({
   projectId: 'Monkey-Bono-With-Cypress',
   env: {
-    appName: 'App prueba Monkey LosEstudiantes',
-    events: 5,
+    //Nombre de la aplicacion
+    appName: 'Monkey Cypress',
+    //Cantidad de mokeys a lanzar: 10
+    events: 100,
+    //Tiempo entre lanzamientos en milisegundos: 1000
     delay: 1000,
-    typeEventos: "randomClick, randomClickButton, randomInputInText, randomClickSelectors, randomClickCheckbox, randomClickRadio"
+    //Eventos permitidos: randomClick,randomClickButton,randomInputInText,randomSelectors
+    typeEvents: "randomClick,randomClickButton,randomInputInText,randomSelectors"
   },
-  pageLoadTimeout: 120000,
-  videosFolder: './results/',
+  pageLoadTimeout: 300000,
+  videosFolder: './results',
   e2e: {
-    setupNodeEvents(on, config) {},
+    setupNodeEvents(on, config) { },
+    //Url a vistar: 'https://losestudiantes.com/'
     baseUrl: 'https://losestudiantes.com/',
-    specPattern: './cypress/integration/monkey_testing.spec.js',
+    specPattern: './cypress/integration/monkey/monkey_testing.spec.js',
   },
 })

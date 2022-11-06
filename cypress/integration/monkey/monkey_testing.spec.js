@@ -11,19 +11,17 @@ const attempts = Cypress.env('events') || 5;
 const delay = Cypress.env('delay') || 1000;
 //Constant that defines the execute instance
 const executeInstance = getRandomInt(0, 10000000);
+//Constant that getted the string events
+const stringEvents = Cypress.env('typeEvents') || "randomClick,randomClickButton,randomInputInText,randomSelectors";
 //Constant that defines the events that can be executed
-const events =
-    [
-        // randomClick,
-        // randomClickButton,
-        randomInputInText,
-        // randomClickSelectors,
-        // randomClickCheckbox,
-        // randomClickRadio
-    ];
+const events = getEvents(stringEvents);
+//Constant that defines the events that can be executed
+const eventsTypeSelect = ['select', '[type="checkbox"]', '[type="radio"]'
+];
 
 //Test setup
-describe('App prueba Monkey LosEstudiantes', function () {
+describe(appName, function () {
+    console.log(typeof events)
     it('[ID_' + executeInstance + ']', function () {
         cy.visit(siteUrl);
         cy.wait(delay);
@@ -36,6 +34,29 @@ function getCurrentTimestamp() {
     return Math.floor(Date.now() / 1000);
 };
 
+//Function that contains array events
+function getEvents(stringEvents) {
+    console.log(stringEvents)
+    let eventsList = [];
+    if (stringEvents.includes('randomClick')) {
+        eventsList.push(randomClick);
+    }
+    if (stringEvents.includes('randomClickButton')) {
+        eventsList.push(randomClickButton);
+    }
+    if (stringEvents.includes('randomInputInText')) {
+        eventsList.push(randomInputInText);
+    }
+    if (stringEvents.includes('randomSelectors')) {
+        eventsList.push(randomSelectors);
+    }
+    if (stringEvents.includes('randomClickCheckbox')) {
+        eventsList.push(randomClickRadioCheckbox);
+    }
+    return eventsList;
+};
+
+
 //Function that generates the attempts randomly
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -43,17 +64,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 };
 
-//Function that makes random clicks of a link type object
+//Function that makes random clicks of a link or button type object
 function randomClick() {
     let element = 'a';
     cy.get('body').then($body => {
         if ($body.find(element).length) {
             cy.get(element).then($links => {
-                console.log('Number of links found => [' + $links.length + ']')
+                console.log('Number of ' + element + ' found => [' + $links.length + ']')
                 let randomLink = $links.get(getRandomInt(0, $links.length));
                 if (!Cypress.dom.isHidden(randomLink)) {
                     cy.wrap(randomLink).click({ force: true });
-                    cy.screenshot(executeInstance + '/links/' + getCurrentTimestamp());
+                    cy.screenshot(executeInstance + '/' + element + '/' + getCurrentTimestamp());
                 }
                 cy.wait(delay);
             });
@@ -63,18 +84,17 @@ function randomClick() {
     });
 }
 
-//Function that makes random clicks of a button type object
+//Function that makes random clicks of a link or button type object
 function randomClickButton() {
     let element = 'button';
     cy.get('body').then($body => {
         if ($body.find(element).length) {
-            cy.get(element).then($buttons => {
-                console.log('Number of buttons found => [' + $buttons.length + ']')
-                let randomButton = $buttons.get(getRandomInt(0, $buttons.length));
-                console.log('Number of buttons found => [' + $buttons.length + ']')
-                if (!Cypress.dom.isHidden(randomButton)) {
-                    cy.wrap(randomButton).click({ force: true });
-                    cy.screenshot(executeInstance + '/buttons/' + getCurrentTimestamp());
+            cy.get(element).then($links => {
+                console.log('Number of ' + element + ' found => [' + $links.length + ']')
+                let randomLink = $links.get(getRandomInt(0, $links.length));
+                if (!Cypress.dom.isHidden(randomLink)) {
+                    cy.wrap(randomLink).click({ force: true });
+                    cy.screenshot(executeInstance + '/' + element + '/' + getCurrentTimestamp());
                 }
                 cy.wait(delay);
             });
@@ -104,7 +124,7 @@ function randomInputInText() {
                     } else {
                         cy.wrap(randomInputText).type(faker.random.words(1), { force: true });
                     }
-                    cy.screenshot(executeInstance + '/inputs/' + getCurrentTimestamp());
+                    cy.screenshot(executeInstance + '/' + element + '/' + getCurrentTimestamp());
                 }
                 cy.wait(delay);
             });
@@ -115,7 +135,7 @@ function randomInputInText() {
 }
 
 //Function that makes random clicks of a button type object
-function randomClickSelectors() {
+function randomClickSelect() {
     let element = 'select';
     cy.get('body').then($body => {
         if ($body.find(element).length) {
@@ -126,7 +146,7 @@ function randomClickSelectors() {
                 console.log(randomOptions)
                 if (!Cypress.dom.isHidden(randomSelect)) {
                     cy.wrap(randomSelect).select(randomOptions, { force: true });
-                    cy.screenshot(executeInstance + '/selects/' + getCurrentTimestamp());
+                    cy.screenshot(executeInstance + '/' + element + '/' + getCurrentTimestamp());
                 }
                 cy.wait(delay);
             });
@@ -136,42 +156,18 @@ function randomClickSelectors() {
     });
 }
 
-//Function that makes random clicks in a checkbox
-function randomClickCheckbox() {
-    let element = '[type="checkbox"]';
-    cy.get('body').then($body => {
-        if ($body.find(element).length) {
-            cy.get(element).then($checks => {
-                console.log('Number of checks found => [' + $checks.length + ']')
-                let randomCheck = $checks.get(getRandomInt(0, $checks.length));
-                if (!Cypress.dom.isHidden(randomCheck)) {
-                    if (!randomCheck.hasAttribute('disabled')
-                        && !randomCheck.hasAttribute('checked')) {
-                        cy.wrap(randomCheck).check();
-                        cy.screenshot(executeInstance + '/checkboxs/' + getCurrentTimestamp());
-                    }
-                }
-                cy.wait(delay);
-            });
-        } else {
-            console.log('El elemento => [' + element + '] no existe en la página')
-        }
-    });
-}
-
-//Function that makes random clicks in a radio
-function randomClickRadio() {
-    let element = '[type="radio"]';
+//Function that makes random clicks in a radio or a checkbox
+function randomClickRadioCheckbox(element) {
     cy.get('body').then($body => {
         if ($body.find(element).length) {
             cy.get(element).then($radios => {
-                console.log('Number of radios found => [' + $radios.length + ']')
+                console.log('Number of ' + element + ' found => [' + $radios.length + ']')
                 let randomRadio = $radios.get(getRandomInt(0, $radios.length));
                 if (!Cypress.dom.isHidden(randomRadio)) {
                     if (!randomRadio.hasAttribute('disabled')
                         && !randomRadio.hasAttribute('checked')) {
                         cy.wrap(randomRadio).check();
-                        cy.screenshot(executeInstance + '/radios/' + getCurrentTimestamp());
+                        cy.screenshot(executeInstance + '/' + element + '/' + getCurrentTimestamp());
                     }
                 }
                 cy.wait(delay);
@@ -180,6 +176,29 @@ function randomClickRadio() {
             console.log('El elemento => [' + element + '] no existe en la página')
         }
     });
+}
+
+//Function that makes random clicks in random selectors
+function randomSelectors() {
+    let executed = false;
+    for (let index = 0; index < eventsTypeSelect.length; index++) {
+        cy.get('body').then($body => {
+            if ($body.find(eventsTypeSelect[index]).length) {
+                if (eventsTypeSelect[index] == 'select') {
+                    randomClickSelect();
+                } else if (eventsTypeSelect[index] == '[type="checkbox"]'
+                    || eventsTypeSelect[index] == '[type="radio"]') {
+                    randomClickRadioCheckbox(eventsTypeSelect[index])
+                } else {
+                    console.log('El elemento => [' + eventsTypeSelect[index] + '] no se encuentra configurado')
+                }
+                executed = true;
+            }
+        });
+        if (executed) {
+            break;
+        }
+    }
 }
 
 //Function that executes random events
@@ -193,3 +212,4 @@ function randomEvents(monkeysLeft) {
         randomEvents(monkeysLeft);
     };
 }
+

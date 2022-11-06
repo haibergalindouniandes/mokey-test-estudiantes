@@ -14,6 +14,9 @@ yarn-error.log
 # Screenshots
 /cypress/screenshots
 
+# results
+/results/*
+
 # IDEs and editors
 .idea/
 .project
