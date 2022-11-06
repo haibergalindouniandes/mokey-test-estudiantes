@@ -6,7 +6,7 @@ module.exports = defineConfig({
     //Nombre de la aplicacion
     appName: 'Monkey Cypress',
     //Cantidad de mokeys a lanzar: 10
-    events: 100,
+    events: 10,
     //Tiempo entre lanzamientos en milisegundos: 1000
     delay: 1000,
     //Eventos permitidos: randomClick,randomClickButton,randomInputInText,randomSelectors

@@ -17,9 +17,9 @@ Este evento selecciona de forma aleatoria una opción de una lista, checkboxs o 
 - Configure the desired parameters: The repository's root folder contains two JSON files which have the configuration parameters for each test. Open them and edit the parameters as needed. You can change the baseURL, the seed for the test, the percentage of events, the delay between events, and the number of events.
 Configure los parámetros según las necesidades de la prueba: 
 - La carpeta raíz del repositorio contiene el archivo `monkey-testing-config.config.js`, el cual brinda los siguientes parámetros que se pueden modificar: 
-<br>* **appName:** Nombre de la aplicación a probar. Ej: Monkey Cypress.
+<br>* **appName:** Nombre de la aplicación a probar. Ej: Monkey LosEstudiantes.com.
 <br>* **baseUrl:** Url de la aplicación a pruebas. Ej: https://losestudiantes.com.
-<br>* **events:** Número de ejecuciones que se desea lanzar. Ej: 100.
+<br>* **events:** Número de ejecuciones que se desea lanzar. Ej: 10.
 <br>* **delay:** Tiempo de retraso entre ejecuciones. Este valor debe ser en milisegundos. Ej: 1000.
 <br>* **typeEvents:** Tipos de eventos a ejecutar. Los eventos deben estar separados por `,` . Ej: randomClick,randomClickButton.
 - Una vez realizada la configuración del archivo ´monkey-testing-config.config.js´ para lanzar la ejecucón de las pruebas, a través de la terminal ejecute el siguiente comando `./node_modules/.bin/cypress run --config-file ./monkey-testing-config.config.js`: 
